@@ -72,36 +72,50 @@
         <!-- Todo List App Container -->
         <div id="todoListContainer" class="max-w-5xl mx-auto">
             <!-- Task Creation Form -->
-            <div id="taskFormContainer" class="bg-white rounded-xl shadow-lg p-8 mb-8">
-                <div class="not-logged-in-message text-center py-4 text-gray-600 hidden">
-                    <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 15v2m0 0v2m0-2h2m-2 0H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <div id="taskFormContainer" class="bg-white rounded-xl shadow-lg p-8 mb-8 hidden">
+                <!-- Add toggle button -->
+                <button id="toggleTaskForm"
+                    class="w-full px-4 py-2 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition-colors duration-200 flex items-center justify-center">
+                    <span id="toggleTaskFormText">Create a Task</span>
+                    <svg id="toggleTaskFormIcon" class="w-5 h-5 ml-2 transform transition-transform duration-200"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
-                    <p class="text-lg font-medium">You need to be logged in to create tasks</p>
-                    <p class="mt-2">Please <a href="/login.html" class="text-purple-600 hover:underline">login</a> or <a
-                            href="/register.html" class="text-purple-600 hover:underline">register</a> to continue</p>
+                </button>
+
+                <!-- Wrap the form in a container for animation -->
+                <div id="taskFormWrapper" class="hidden transform transition-all duration-300 opacity-0 h-0">
+                    <div class="not-logged-in-message text-center py-4 text-gray-600 hidden">
+                        <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 15v2m0 0v2m0-2h2m-2 0H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p class="text-lg font-medium">You need to be logged in to create tasks</p>
+                        <p class="mt-2">Please <a href="/login.html" class="text-purple-600 hover:underline">login</a>
+                            or <a href="/register.html" class="text-purple-600 hover:underline">register</a> to continue
+                        </p>
+                    </div>
+                    <h2 class="text-xl mt-6 font-bold mb-6 text-gray-800">Create a New Task</h2>
+                    <form id="taskForm" class="space-y-5">
+                        <input type="text" id="taskTitle" placeholder="Task Title"
+                            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
+                            required>
+                        <textarea id="taskDescription" placeholder="Task Description"
+                            class="w-full resize-none px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
+                            rows="4" required></textarea>
+
+                        <input type="datetime-local" id="taskDeadline"
+                            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200">
+
+                        <button type="submit" class="w-full px-6 py-3 relative overflow-hidden group rounded-lg">
+                            <span class="absolute inset-0 bg-gradient-to-r from-purple-500 to-blue-500"></span>
+                            <span
+                                class="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 transition-opacity duration-300 opacity-0 group-hover:opacity-100"></span>
+                            <span class="relative text-white font-medium">Add Task</span>
+                        </button>
+                    </form>
                 </div>
-                <h2 class="text-xl font-bold mb-6 text-gray-800">Create a New Task</h2>
-                <form id="taskForm" class="space-y-5">
-                    <input type="text" id="taskTitle" placeholder="Task Title"
-                        class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
-                        required>
-                    <textarea id="taskDescription" placeholder="Task Description"
-                        class="w-full resize-none px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200"
-                        rows="4" required></textarea>
-
-                    <input type="datetime-local" id="taskDeadline"
-                        class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-200">
-
-                    <button type="submit" class="w-full px-6 py-3 relative overflow-hidden group rounded-lg">
-                        <span class="absolute inset-0 bg-gradient-to-r from-purple-500 to-blue-500"></span>
-                        <span
-                            class="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 transition-opacity duration-300 opacity-0 group-hover:opacity-100"></span>
-                        <span class="relative text-white font-medium">Add Task</span>
-                    </button>
-                </form>
             </div>
 
             <!-- Tasks List -->

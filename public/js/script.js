@@ -90,8 +90,11 @@ const updateUI = async () => {
 		const welcomeMessage = document.getElementById("welcomeMessage");
 		welcomeMessage.textContent = `Welcome, ${firstName}!`;
 		userInfo.style.display = "flex";
-		// Show task form and todo list container
+		// Show task form container but keep form hidden initially
 		document.getElementById("taskFormContainer").classList.remove("hidden");
+		document
+			.getElementById("taskFormWrapper")
+			.classList.add("hidden", "opacity-0", "h-0");
 		document.getElementById("tasksList").classList.add("hidden");
 		todoListContainer.classList.remove("hidden");
 		fetchTasks();
@@ -806,6 +809,49 @@ const getDeadlineStatus = (deadline) => {
 	if (diffDays <= 3) return "soon";
 	return "normal";
 };
+
+// Add this after your existing event listeners
+
+// Task form toggle functionality
+const toggleTaskForm = document.getElementById("toggleTaskForm");
+const taskFormWrapper = document.getElementById("taskFormWrapper");
+const toggleTaskFormText = document.getElementById("toggleTaskFormText");
+const toggleTaskFormIcon = document.getElementById("toggleTaskFormIcon");
+
+toggleTaskForm.addEventListener("click", () => {
+	const isHidden = taskFormWrapper.classList.contains("hidden");
+
+	// Toggle form visibility
+	if (isHidden) {
+		taskFormWrapper.classList.remove("hidden");
+		// Use setTimeout to ensure the transition works
+		setTimeout(() => {
+			taskFormWrapper.classList.remove(
+				"opacity-0",
+				"h-0",
+				"p-0",
+				"m-0",
+				"overflow-hidden"
+			);
+			toggleTaskFormIcon.classList.add("rotate-180");
+			toggleTaskFormText.textContent = "Hide";
+		}, 10);
+	} else {
+		taskFormWrapper.classList.add(
+			"opacity-0",
+			"h-0",
+			"p-0",
+			"m-0",
+			"overflow-hidden"
+		);
+		toggleTaskFormIcon.classList.remove("rotate-180");
+		toggleTaskFormText.textContent = "Create a Task";
+		// Hide the form after transition
+		setTimeout(() => {
+			taskFormWrapper.classList.add("hidden");
+		}, 300);
+	}
+});
 
 // Update UI on DOM content loaded
 document.addEventListener("DOMContentLoaded", updateUI);
