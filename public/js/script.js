@@ -280,13 +280,50 @@ const fetchTasks = async () => {
 										 ${
 												task.deadline
 													? `
-											 <div class="flex items-center text-sm text-gray-500">
-												 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-													 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-												 </svg>
-												 ${new Date(task.deadline).toLocaleString()}
-											 </div>
-										 `
+													<div class="flex items-center text-sm ${
+														task.completed
+															? "text-gray-500"
+															: (() => {
+																	const status = getDeadlineStatus(
+																		task.deadline
+																	);
+																	switch (status) {
+																		case "overdue":
+																			return "text-red-500 font-medium";
+																		case "urgent":
+																			return "text-orange-500 font-medium";
+																		case "soon":
+																			return "text-yellow-500";
+																		default:
+																			return "text-gray-500";
+																	}
+															  })()
+													}">
+														<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+															<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+														</svg>
+														${new Date(task.deadline).toLocaleString()}
+														${
+															!task.completed
+																? (() => {
+																		const status = getDeadlineStatus(
+																			task.deadline
+																		);
+																		switch (status) {
+																			case "overdue":
+																				return '<span class="ml-2 px-2 py-1 bg-red-100 text-red-600 rounded-full text-xs">Overdue</span>';
+																			case "urgent":
+																				return '<span class="ml-2 px-2 py-1 bg-orange-100 text-orange-600 rounded-full text-xs">Due Today</span>';
+																			case "soon":
+																				return '<span class="ml-2 px-2 py-1 bg-yellow-100 text-yellow-600 rounded-full text-xs">Due Soon</span>';
+																			default:
+																				return "";
+																		}
+																  })()
+																: ""
+														}
+													</div>
+												`
 													: ""
 											}
 										 <label class="flex items-center space-x-2 cursor-pointer">
@@ -404,6 +441,16 @@ const handleEditTask = (taskId) => {
 		return;
 	}
 
+	// Format deadline with timezone offset
+	let deadlineValue = "";
+	if (task.deadline) {
+		const date = new Date(task.deadline);
+		// Adjust for timezone and format for datetime-local input
+		deadlineValue = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+			.toISOString()
+			.slice(0, 16);
+	}
+
 	// Create edit modal HTML
 	const editModal = document.createElement("div");
 	editModal.className =
@@ -414,19 +461,11 @@ const handleEditTask = (taskId) => {
             <div class="bg-white rounded-lg p-6 w-11/12 max-w-md">
                 <h2 class="text-xl font-bold mb-4">Edit Task</h2>
                 <form id="editTaskForm" class="space-y-4">
-                    <input type="text" id="editTaskTitle" value="${
-											task.title
-										}" required
+                    <input type="text" id="editTaskTitle" value="${task.title}" required
                         class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <textarea id="editTaskDescription" rows="4" required
-                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">${
-													task.description
-												}</textarea>
-                    <input type="datetime-local" id="editTaskDeadline" value="${
-											task.deadline
-												? new Date(task.deadline).toISOString().slice(0, 16)
-												: ""
-										}"
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">${task.description}</textarea>
+                    <input type="datetime-local" id="editTaskDeadline" value="${deadlineValue}"
                         class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <button type="submit"
                         class="w-full px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 focus:outline-none">
@@ -476,7 +515,11 @@ const handleEditTask = (taskId) => {
 
 			let updatedDeadline = null;
 			if (updatedDeadlineInput) {
-				updatedDeadline = new Date(updatedDeadlineInput).toISOString();
+				// Create date object and adjust for timezone
+				const date = new Date(updatedDeadlineInput);
+				updatedDeadline = new Date(
+					date.getTime() + date.getTimezoneOffset() * 60000
+				).toISOString();
 			}
 
 			try {
@@ -748,5 +791,21 @@ const showTaskDetails = (task) => {
 		}
 	});
 };
+
+// Add this function before fetchTasks
+const getDeadlineStatus = (deadline) => {
+	if (!deadline) return null;
+
+	const now = new Date();
+	const deadlineDate = new Date(deadline);
+	const diffTime = deadlineDate - now;
+	const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+	if (diffTime < 0) return "overdue";
+	if (diffDays <= 1) return "urgent";
+	if (diffDays <= 3) return "soon";
+	return "normal";
+};
+
 // Update UI on DOM content loaded
 document.addEventListener("DOMContentLoaded", updateUI);
