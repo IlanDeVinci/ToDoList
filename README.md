@@ -17,11 +17,6 @@ Ilan Maouchi
 
 1. Clone the repository
 
-```bash
-git clone [repository-url]
-cd TaskMaster
-```
-
 2. Create a `.env` file in the root directory
 
 ```bash
