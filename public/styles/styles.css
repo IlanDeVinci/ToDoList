@@ -1,0 +1,30 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+.completed h3 {
+	text-decoration: line-through;
+	color: #4b5563;
+}
+
+.task-deadline {
+	font-size: 0.875rem;
+	color: #6b7280;
+}
+
+.transition-standard {
+	transition: all 0.2s ease-in-out;
+}
+
+.shadow-standard {
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+		0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.hover-standard:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 6px 8px -2px rgba(0, 0, 0, 0.1),
+		0 4px 6px -1px rgba(0, 0, 0, 0.06);
+}
